@@ -414,6 +414,20 @@ async function sendGreeting(
   });
 }
 
+export async function sendMenuFallback(
+  phoneNumberId: string,
+  to: string
+): Promise<void> {
+  await sendButtons(phoneNumberId, to, {
+    body: 'No entendí tu mensaje 😅 Por favor elige una de estas opciones:',
+    buttons: [
+      { id: BUTTON_IDS.BOOK_NEW, title: 'Agendar cita 📅' },
+      { id: BUTTON_IDS.MY_APPOINTMENTS, title: 'Mis citas' },
+      { id: BUTTON_IDS.HELP, title: 'Ayuda' },
+    ],
+  });
+}
+
 async function sendDatePicker(phoneNumberId: string, to: string): Promise<void> {
   await sendText(
     phoneNumberId,

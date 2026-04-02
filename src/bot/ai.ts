@@ -30,6 +30,13 @@ export async function handleAI(
 ): Promise<void> {
   const { businessId, customerPhone, customerName, messageText, phoneNumberId } = event;
 
+  // Guardia: nunca llamar a la API si no hay key (el router debería evitar esto,
+  // pero por seguridad también lo verificamos aquí)
+  if (!process.env.ANTHROPIC_API_KEY) {
+    await sendText(phoneNumberId, customerPhone, ERROR_MESSAGES.GENERIC);
+    return;
+  }
+
   // Limitar uso de IA: máximo N turnos consecutivos
   const history = context.ai_history ?? [];
   if (history.length >= MAX_AI_TURNS * 2) {

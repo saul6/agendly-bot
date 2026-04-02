@@ -9,6 +9,7 @@ console.log('ENV CHECK:', {
   SUPABASE_URL: process.env.SUPABASE_URL ? 'OK' : 'MISSING',
   SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY ? 'OK' : 'MISSING',
   META_VERIFY_TOKEN: process.env.META_VERIFY_TOKEN ? 'OK' : 'MISSING',
+  ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY ? 'OK' : 'disabled (optional)',
   PORT: process.env.PORT,
 });
 

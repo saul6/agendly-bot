@@ -1,5 +1,5 @@
 import { getConversation, upsertConversation } from '../services/supabase.js';
-import { handleFixedFlow } from './flow.js';
+import { handleFixedFlow, sendMenuFallback } from './flow.js';
 import { handleAI } from './ai.js';
 import {
   BOOKING_TRIGGERS,
@@ -9,6 +9,12 @@ import {
   STATES,
 } from './states.js';
 import type { IncomingEvent, RouterDecision } from '../types/index.js';
+
+const AI_ENABLED = Boolean(process.env.ANTHROPIC_API_KEY);
+
+if (!AI_ENABLED) {
+  console.log('[ai] IA deshabilitada — ANTHROPIC_API_KEY no configurada');
+}
 
 // ─── Punto de entrada: clasifica y despacha ───────────────────────────────────
 
@@ -24,6 +30,9 @@ export async function routeMessage(event: IncomingEvent): Promise<void> {
 
   if (decision === 'fixed_flow') {
     await handleFixedFlow(event, currentState, context);
+  } else if (!AI_ENABLED) {
+    await sendMenuFallback(event.phoneNumberId, event.customerPhone);
+    await upsertConversation(event.businessId, event.customerPhone, STATES.GREETING, {});
   } else {
     await handleAI(event, currentState, context);
   }
